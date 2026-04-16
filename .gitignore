@@ -10,6 +10,7 @@
 !.yarn/releases
 !.yarn/versions
 .git-old
+compressedpdf-next
 
 # testing
 /coverage
