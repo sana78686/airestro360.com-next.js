@@ -4,6 +4,8 @@ import type { Metadata } from 'next'
 import { getLegalPage } from '@/lib/cms/server'
 import { absolutizeCmsHtmlServer, siteOriginFromEnv } from '@/lib/cms/html'
 import { JsonLdScript } from '@/components/cms/JsonLdScript'
+import PageHeroBar from '@/components/site/PageHeroBar'
+import { tintForSlug } from '@/lib/pageHeaderTint'
 import '@/styles/cms-page.css'
 
 const VALID = ['terms', 'privacy-policy', 'disclaimer', 'about-us', 'cookie-policy']
@@ -45,12 +47,12 @@ export default async function IdLegalPage({ params }: { params: Promise<{ slug: 
   const origin = siteOriginFromEnv()
   const html = absolutizeCmsHtmlServer(String(data?.content || ''), origin)
 
+  const tint = tintForSlug(`legal-${slug}`)
+
   return (
     <article className="cms-page wrap">
       <JsonLdScript data={data.json_ld} />
-      <header className="cms-page-header">
-        <h1 className="cms-page-title">{data.title || slug}</h1>
-      </header>
+      <PageHeroBar title={String(data.title || slug)} tint={tint} />
       <div
         className="cms-page-content legal-content-body"
         dangerouslySetInnerHTML={{ __html: html }}

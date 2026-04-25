@@ -1,0 +1,67 @@
+/* Tinted page title block — sits under SiteLayout breadcrumbs, full content width */
+.page-hero-bar {
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 0 0 18px 18px;
+  padding: 1.1rem 1.4rem;
+  margin: 0 0 1.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-top: none;
+}
+
+.page-hero-bar-kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.page-hero-bar-title {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  color: #0a0a0a;
+}
+
+.page-hero-bar-sub {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: #3a3a3a;
+  max-width: none;
+}
+
+.page-hero-bar--rose {
+  background: linear-gradient(180deg, #ffe4e6 0%, #fff7f7 50%, #ffffff 100%);
+}
+.page-hero-bar--coral {
+  background: linear-gradient(180deg, #ffedd5 0%, #fffaf5 55%, #ffffff 100%);
+}
+.page-hero-bar--sky {
+  background: linear-gradient(180deg, #e0f2fe 0%, #f0f9ff 55%, #ffffff 100%);
+}
+.page-hero-bar--emerald {
+  background: linear-gradient(180deg, #d1fae5 0%, #f0fdf4 55%, #ffffff 100%);
+}
+.page-hero-bar--violet {
+  background: linear-gradient(180deg, #ede9fe 0%, #f5f3ff 55%, #ffffff 100%);
+}
+.page-hero-bar--amber {
+  background: linear-gradient(180deg, #fef3c7 0%, #fffbeb 55%, #ffffff 100%);
+}
+.page-hero-bar--fuchsia {
+  background: linear-gradient(180deg, #fae8ff 0%, #fdf4ff 55%, #ffffff 100%);
+}
+.page-hero-bar--cyan {
+  background: linear-gradient(180deg, #cffafe 0%, #ecfeff 55%, #ffffff 100%);
+}
+.page-hero-bar--lime {
+  background: linear-gradient(180deg, #ecfccb 0%, #f7fee7 55%, #ffffff 100%);
+}
+.page-hero-bar--slate {
+  background: linear-gradient(180deg, #e2e8f0 0%, #f8fafc 55%, #ffffff 100%);
+}

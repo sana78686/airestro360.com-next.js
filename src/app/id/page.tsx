@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import RestroHomeClient from '@/components/marketing/RestroHomeClient'
+import { JsonLdScript } from '@/components/cms/JsonLdScript'
 import { translations } from '@/i18n/translations'
 import { socialMetadata } from '@/lib/seoMetadata'
+import { getFaq, getHomeCards, getHomePageContent, getSections } from '@/lib/cms/server'
 
 const h = translations.id
 
@@ -17,6 +19,54 @@ export const metadata: Metadata = {
   }),
 }
 
-export default function IdHomePage() {
-  return <RestroHomeClient />
+export default async function IdHomePage() {
+  const locale = 'id'
+  const publicPath = '/id'
+
+  let cmsHomeHtml = ''
+  let homeJsonLd: Record<string, unknown> | null = null
+  let landingFaq: { question?: string; answer?: string }[] = []
+  let landingCards: unknown[] = []
+  let howSection: { title?: string; description?: string } | null = null
+  let cmsSections: unknown[] = []
+
+  try {
+    const homeRes = await getHomePageContent(locale, publicPath)
+    cmsHomeHtml = typeof homeRes?.content === 'string' ? homeRes.content : ''
+    const graph = homeRes?.json_ld?.['@graph']
+    homeJsonLd =
+      Array.isArray(graph) && graph.length > 0 && homeRes.json_ld
+        ? (homeRes.json_ld as Record<string, unknown>)
+        : null
+  } catch {
+    /* CMS optional */
+  }
+
+  try {
+    const [faqRes, cardsRes, sectionsRes] = await Promise.all([
+      getFaq(locale),
+      getHomeCards(locale),
+      getSections(locale),
+    ])
+    landingFaq = Array.isArray(faqRes.faq) ? faqRes.faq : []
+    landingCards = Array.isArray(cardsRes.cards) ? cardsRes.cards : []
+    howSection =
+      cardsRes?.section && typeof cardsRes.section === 'object' ? cardsRes.section : null
+    cmsSections = Array.isArray(sectionsRes.sections) ? sectionsRes.sections : []
+  } catch {
+    /* optional */
+  }
+
+  return (
+    <>
+      {homeJsonLd ? <JsonLdScript data={homeJsonLd} /> : null}
+      <RestroHomeClient
+        cmsHomeHtml={cmsHomeHtml}
+        landingFaq={landingFaq}
+        landingCards={landingCards}
+        howSection={howSection}
+        cmsSections={cmsSections}
+      />
+    </>
+  )
 }

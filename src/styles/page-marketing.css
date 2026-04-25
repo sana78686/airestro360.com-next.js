@@ -1,0 +1,33 @@
+/* Inner pages: same horizontal band as header (`main.cms-main` = 1200px). 
+   No inner max-width so hero/body use the full column, not a narrow 48rem strip. */
+.page-marketing {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 0.2rem 0 3.5rem;
+  color: #111;
+}
+
+.page-marketing-body {
+  width: 100%;
+  max-width: none;
+  padding-top: 1.5rem;
+}
+
+.page-marketing-section {
+  margin-bottom: 1.75rem;
+}
+
+.page-marketing-h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  color: #111;
+}
+
+.page-marketing-p {
+  font-size: 0.98rem;
+  line-height: 1.65;
+  color: #3a3a3a;
+  margin: 0;
+}

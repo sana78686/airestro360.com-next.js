@@ -1,0 +1,236 @@
+/* Light-theme pricing (aligned with airestro header width via parent .ar-container) */
+.pricing-tiers,
+.pricing-compare {
+  width: 100%;
+  margin: 0 0 3rem;
+}
+
+.pricing-tiers-h2,
+.pricing-compare-h2 {
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 0 0 0.5rem;
+  color: #0a0a0a;
+}
+
+.pricing-tiers-sub,
+.pricing-compare-sub {
+  margin: 0 0 1.5rem;
+  color: #4a5568;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  max-width: 42rem;
+}
+
+.pricing-tiers-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 900px) {
+  .pricing-tiers-grid {
+    grid-template-columns: repeat(3, 1fr);
+    align-items: stretch;
+  }
+}
+
+.pricing-tier-card {
+  position: relative;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 1.35rem 1.25rem 1.5rem;
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.pricing-tier-card--featured {
+  border-color: rgba(5, 130, 76, 0.45);
+  box-shadow: 0 8px 32px rgba(5, 130, 76, 0.12);
+}
+
+.pricing-tier-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #05824c;
+  background: rgba(5, 130, 76, 0.1);
+  border-radius: 999px;
+  padding: 0.25rem 0.6rem;
+  margin: 0 0 0.5rem;
+  width: fit-content;
+}
+
+.pricing-tier-name {
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6b7280;
+  margin: 0 0 0.25rem;
+}
+
+.pricing-tier-card--featured .pricing-tier-name {
+  color: #05824c;
+}
+
+.pricing-tier-tagline {
+  font-size: 0.88rem;
+  color: #6b7280;
+  line-height: 1.4;
+  margin: 0 0 0.75rem;
+  min-height: 2.5rem;
+}
+
+.pricing-tier-price {
+  font-size: clamp(1.35rem, 2.4vw, 1.6rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #111;
+  margin: 0 0 0.25rem;
+}
+
+.pricing-tier-card--featured .pricing-tier-price {
+  color: #05824c;
+}
+
+.pricing-tier-price-sub,
+.pricing-tier-note {
+  font-size: 0.85rem;
+  color: #6b7280;
+  line-height: 1.4;
+  margin: 0 0 0.4rem;
+}
+
+.pricing-tier-note {
+  font-style: italic;
+  margin-bottom: 0.9rem;
+}
+
+.pricing-tier-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.25rem 0 1rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: #111;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.pricing-tier-cta:hover {
+  border-color: #05824c;
+  color: #05824c;
+}
+
+.pricing-tier-cta--primary {
+  background: #05824c;
+  color: #fff;
+  border-color: #05824c;
+}
+
+.pricing-tier-cta--primary:hover {
+  background: #046b3f;
+  border-color: #046b3f;
+  color: #fff;
+}
+
+.pricing-tier-features {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #374151;
+  flex: 1;
+}
+
+.pricing-tier-features li {
+  position: relative;
+  padding-left: 1.1rem;
+  margin-bottom: 0.4rem;
+}
+
+.pricing-tier-features li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #05824c;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.pricing-tier-compare {
+  margin: 1rem 0 0;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+/* Comparison table */
+.pricing-compare-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #fafafa;
+}
+
+.pricing-compare-table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.pricing-compare-table th,
+.pricing-compare-table td {
+  padding: 0.65rem 0.9rem;
+  text-align: center;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.pricing-compare-table th[scope='row'] {
+  text-align: left;
+  font-weight: 500;
+  color: #1f2937;
+  width: 38%;
+  background: #fff;
+}
+
+.pricing-compare-table thead th {
+  background: #f3f4f6;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #4b5563;
+}
+
+.pricing-compare-table tbody tr:last-child th,
+.pricing-compare-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.pricing-compare-table td {
+  color: #05824c;
+  font-weight: 700;
+}
+
+.pricing-compare-table td:empty {
+  color: #9ca3af;
+}

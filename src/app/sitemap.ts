@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { siteOriginFromEnv } from '@/lib/cms/html'
 import { getBlogs } from '@/lib/cms/server'
+import { MARKETING_SLUGS } from '@/lib/marketing/registry'
 
 export const revalidate = 3600
 
@@ -28,9 +29,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: '', priority: 1, changeFrequency: 'weekly' as const },
     { path: '/blog', priority: 0.9, changeFrequency: 'weekly' as const },
     { path: '/contact', priority: 0.85, changeFrequency: 'monthly' as const },
+    { path: '/tools', priority: 0.8, changeFrequency: 'monthly' as const },
+    { path: '/pricing', priority: 0.85, changeFrequency: 'monthly' as const },
+    { path: '/about', priority: 0.8, changeFrequency: 'monthly' as const },
     { path: '/id', priority: 1, changeFrequency: 'weekly' as const },
     { path: '/id/blog', priority: 0.9, changeFrequency: 'weekly' as const },
     { path: '/id/contact', priority: 0.85, changeFrequency: 'monthly' as const },
+    { path: '/id/tools', priority: 0.8, changeFrequency: 'monthly' as const },
+    { path: '/id/pricing', priority: 0.85, changeFrequency: 'monthly' as const },
+    { path: '/id/about', priority: 0.8, changeFrequency: 'monthly' as const },
   ]
 
   const entries: MetadataRoute.Sitemap = staticPaths.map(({ path, priority, changeFrequency }) => ({
@@ -39,6 +46,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency,
     priority,
   }))
+
+  for (const slug of Object.keys(MARKETING_SLUGS)) {
+    const enc = encodeURIComponent(slug)
+    entries.push({
+      url: `${base}/${enc}`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.75,
+    })
+    entries.push({
+      url: `${base}/id/${enc}`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.75,
+    })
+  }
 
   try {
     const [enRes, idRes] = await Promise.all([getBlogs('en'), getBlogs('id')])

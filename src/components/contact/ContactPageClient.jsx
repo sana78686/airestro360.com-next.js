@@ -7,14 +7,16 @@ import { getContactSettings, submitContactForm } from '@/lib/cms-client'
 import JsonLd from '@/components/JsonLd'
 import { getPreferredLang, supportedLangs, langPrefix } from '@/i18n/translations'
 import { usePathLang } from '@/hooks/usePathLang'
+import PageHeroBar from '@/components/site/PageHeroBar'
+import { tintForPageKey } from '@/lib/pageHeaderTint'
 import '@/styles/ContactPage.css'
 
-export default function ContactPageClient() {
+export default function ContactPageClient({ initialSettings: initialFromServer = null } = {}) {
   const lang = usePathLang()
   const t = useTranslation(lang)
   const localeForApi = supportedLangs.includes(lang) ? lang : getPreferredLang()
-  const [settings, setSettings] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [settings, setSettings] = useState(() => initialFromServer)
+  const [loading, setLoading] = useState(() => initialFromServer == null)
   const [error, setError] = useState(null)
   const [submitting, setSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
@@ -33,7 +35,6 @@ export default function ContactPageClient() {
   }, [lang])
 
   useEffect(() => {
-    setLoading(true)
     setError(null)
     getContactSettings(localeForApi)
       .then(setSettings)
@@ -124,13 +125,14 @@ export default function ContactPageClient() {
     )
   }
 
+  const heroTint = tintForPageKey('contact')
+
   return (
     <article className="contact-page wrap">
       <JsonLd data={settings?.json_ld} />
+      <PageHeroBar title={t('contact.title')} subtitle={t('contact.intro')} tint={heroTint} />
       <div className="contact-page-grid">
         <div className="contact-page-intro">
-          <h1 className="contact-page-title">{t('contact.title')}</h1>
-          <p className="contact-page-intro-text">{t('contact.intro')}</p>
           <div className="contact-page-details" aria-label={t('contact.detailsHeading')}>
             {contactDetailsVisible(settings) ? (
               <ul className="contact-details-list">

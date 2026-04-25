@@ -19,6 +19,10 @@
   margin-bottom: 2rem;
 }
 
+.blog-list-page.wrap .blog-list-grid {
+  margin-top: 1.5rem;
+}
+
 .blog-list-title {
   font-size: 1.75rem;
   font-weight: 700;

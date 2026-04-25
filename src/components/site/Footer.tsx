@@ -3,18 +3,9 @@
 import { useState, useRef, useEffect } from 'react'
 import { supportedLangs, langOptions, defaultLang, langPrefix as lp, writeUserLocalePreference } from '@/i18n/translations'
 import LangFlag from './LangFlag'
+import { FOOTER_LOGO_SRC } from '@/constants/brand'
 import { ucWords } from '@/utils/ucWords'
 import './Footer.css'
-
-const LEGAL_SLUG_ORDER = ['terms', 'privacy-policy', 'disclaimer', 'about-us', 'cookie-policy']
-
-const LEGAL_LABEL_KEY = {
-  terms: 'footerTerms',
-  'privacy-policy': 'footerPrivacy',
-  disclaimer: 'footerDisclaimer',
-  'about-us': 'footerAbout',
-  'cookie-policy': 'footerCookies',
-}
 
 function buildLangSwitchHref(pathname: string, currentLang: string, targetLang: string) {
   let suffix = pathname || '/'
@@ -24,6 +15,56 @@ function buildLangSwitchHref(pathname: string, currentLang: string, targetLang: 
   if (!suffix.startsWith('/')) suffix = '/' + suffix
   if (targetLang === defaultLang) return suffix
   return `/${targetLang}${suffix === '/' ? '' : suffix}`
+}
+
+function IconTranslate({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      aria-hidden
+    >
+      <path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+function IconGlobe({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
+    </svg>
+  )
+}
+
+function IconLinkedIn({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+    </svg>
+  )
+}
+
+function IconYouTube({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+    </svg>
+  )
+}
+
+function IconChat({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z" />
+    </svg>
+  )
 }
 
 type FooterPage = { id: number; title: string; slug: string; placement?: string }
@@ -46,122 +87,220 @@ export default function Footer({
   showFaqLink = false,
 }: FooterProps) {
   const [langOpen, setLangOpen] = useState(false)
+  const [regionOpen, setRegionOpen] = useState(false)
   const langRef = useRef<HTMLDivElement | null>(null)
+  const regionRef = useRef<HTMLDivElement | null>(null)
 
   const cmsFooterLinks = footerPages.filter(
     (p) => p.placement === 'footer' || p.placement === 'both',
   )
 
-  const legalLinksToShow = LEGAL_SLUG_ORDER.filter((slug) => legalVisibility[slug])
-  const showLegalColumn = legalLinksToShow.length > 0
-
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (langRef.current && !langRef.current.contains(e.target as Node)) setLangOpen(false)
+      if (regionRef.current && !regionRef.current.contains(e.target as Node)) setRegionOpen(false)
     }
-    if (langOpen) {
+    if (langOpen || regionOpen) {
       document.addEventListener('click', handleClickOutside)
       return () => document.removeEventListener('click', handleClickOutside)
     }
-  }, [langOpen])
+  }, [langOpen, regionOpen])
 
   const effectiveLang = supportedLangs.includes(lang) ? lang : defaultLang
   const prefix = lp(effectiveLang)
+  const toolsPath = `${prefix}/tools`
+
+  const privacyHref = legalVisibility['privacy-policy']
+    ? `${prefix}/legal/privacy-policy`
+    : `${prefix}/legal/cookie-policy`
+  const showPrivacyCookie = !!(legalVisibility['privacy-policy'] || legalVisibility['cookie-policy'])
+  const securityHref = legalVisibility.disclaimer
+    ? `${prefix}/legal/disclaimer`
+    : legalVisibility.terms
+      ? `${prefix}/legal/terms`
+      : null
 
   return (
     <footer className="footer footer--dark">
       <div className="footer-inner">
-        <div className="footer-top">
-          <div className="footer-columns">
-            <div className="footer-col">
-              <h3 className="footer-col-title">{t('footerCompany')}</h3>
-              <a href={`${prefix}/blog`}>{t('footerBlog')}</a>
-              <a href={`${prefix}/contact`}>{t('footerContact')}</a>
-              {showFaqLink && (
-                <a href={`${prefix}/#landing-faq`}>{t('footerFaq')}</a>
-              )}
-            </div>
-            {cmsFooterLinks.length > 0 && (
-              <div className="footer-col">
-                <h3 className="footer-col-title">{t('footerOther')}</h3>
-                {cmsFooterLinks.map((p) => (
-                  <a key={p.id} href={`${prefix}/page/${p.slug}`}>
-                    {ucWords(p.title)}
-                  </a>
-                ))}
-              </div>
-            )}
-            {showLegalColumn && (
-              <div className="footer-col">
-                <h3 className="footer-col-title">{t('footerLegal')}</h3>
-                {legalLinksToShow.map((slug) => (
-                  <a key={slug} href={`${prefix}/legal/${slug}`}>
-                    {t(LEGAL_LABEL_KEY[slug as keyof typeof LEGAL_LABEL_KEY])}
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="footer-divider" />
-
-        <div className="footer-bottom">
-          <div className="footer-lang-wrap" ref={langRef}>
-            <button
-              type="button"
-              className="footer-lang-btn"
-              onClick={() => setLangOpen((o) => !o)}
-              aria-expanded={langOpen}
-              aria-haspopup="listbox"
-              aria-label="Select language"
-            >
-              <span className="footer-lang-icon" aria-hidden>
-                <LangFlag lang={effectiveLang} width={20} />
-              </span>
-              <span>{langOptions[effectiveLang as keyof typeof langOptions]?.label || t('footerLanguage')}</span>
-              <span className="footer-lang-chevron" aria-hidden>▼</span>
-            </button>
-            {langOpen && (
-              <ul className="footer-lang-menu" role="listbox">
-                {supportedLangs.map((l) => (
-                  <li key={l} role="option" aria-selected={effectiveLang === l ? true : false}>
-                    <a
-                      href={buildLangSwitchHref(pathname, effectiveLang, l)}
-                      className="footer-lang-item"
-                      onClick={() => writeUserLocalePreference(l)}
-                    >
-                      <span className="footer-lang-item-flag" aria-hidden>
-                        <LangFlag lang={l} width={18} />
-                      </span>
-                      <span>{langOptions[l as keyof typeof langOptions]?.label || l.toUpperCase()}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-          <div className="footer-social-copy">
-            <nav className="footer-social" aria-label="Social links">
-              <a href="#twitter" aria-label="X (Twitter)"><span className="footer-social-icon">𝕏</span></a>
-              <a href="#facebook" aria-label="Facebook"><span className="footer-social-icon">f</span></a>
-              <a href="#linkedin" aria-label="LinkedIn"><span className="footer-social-icon">in</span></a>
-              <a href="#instagram" aria-label="Instagram"><span className="footer-social-icon">📷</span></a>
-              <a href="#tiktok" aria-label="TikTok"><span className="footer-social-icon">♪</span></a>
-            </nav>
-            <p className="footer-copy">
-              <span>{t('footerCopyrightPrefix')}</span>
+        <div className="footer-main-grid">
+          <div className="footer-brand-col">
+            <a href={`${prefix}/`} className="footer-logo-link">
+              <img
+                src={FOOTER_LOGO_SRC}
+                alt="AI Restro 360"
+                className="footer-logo-img"
+                width={180}
+                height={40}
+                decoding="async"
+              />
+            </a>
+            <nav className="footer-social footer-social--brand" aria-label="Social links">
               <a
-                href="https://apimstec.com"
+                href="https://www.linkedin.com/"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="footer-social-btn"
+                aria-label="LinkedIn"
               >
-                {t('footerPoweredBy')}
+                <IconLinkedIn className="footer-social-svg" />
               </a>
-            </p>
+              <a
+                href="https://www.youtube.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="footer-social-btn"
+                aria-label="YouTube"
+              >
+                <IconYouTube className="footer-social-svg" />
+              </a>
+            </nav>
+
+            <div className="footer-selectors">
+              <div className="footer-pill-wrap" ref={langRef}>
+                <button
+                  type="button"
+                  className="footer-pill-btn"
+                  onClick={() => {
+                    setLangOpen((o) => !o)
+                    setRegionOpen(false)
+                  }}
+                  aria-expanded={langOpen}
+                  aria-haspopup="listbox"
+                  aria-label="Select language"
+                >
+                  <IconTranslate className="footer-pill-icon" />
+                  <span>{langOptions[effectiveLang as keyof typeof langOptions]?.label || t('footerLanguage')}</span>
+                  <span className="footer-pill-chevron" aria-hidden>▾</span>
+                </button>
+                {langOpen && (
+                  <ul className="footer-pill-menu" role="listbox">
+                    {supportedLangs.map((l) => (
+                      <li key={l} role="option">
+                        <a
+                          href={buildLangSwitchHref(pathname, effectiveLang, l)}
+                          className="footer-pill-item"
+                          onClick={() => writeUserLocalePreference(l)}
+                        >
+                          <span className="footer-pill-item-flag" aria-hidden>
+                            <LangFlag lang={l} width={18} />
+                          </span>
+                          <span>{langOptions[l as keyof typeof langOptions]?.label || l.toUpperCase()}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="footer-pill-wrap" ref={regionRef}>
+                <button
+                  type="button"
+                  className="footer-pill-btn"
+                  onClick={() => {
+                    setRegionOpen((o) => !o)
+                    setLangOpen(false)
+                  }}
+                  aria-expanded={regionOpen}
+                  aria-haspopup="listbox"
+                  aria-label={t('footerRegionAria')}
+                >
+                  <IconGlobe className="footer-pill-icon" />
+                  <span>{t('footerRegionGlobal')}</span>
+                  <span className="footer-pill-chevron" aria-hidden>▾</span>
+                </button>
+                {regionOpen && (
+                  <ul className="footer-pill-menu" role="listbox">
+                    <li role="option">
+                      <span className="footer-pill-item footer-pill-item--static">{t('footerRegionGlobal')}</span>
+                    </li>
+                  </ul>
+                )}
+              </div>
+            </div>
+
+            <p className="footer-copy-block">{t('footerCopyrightFull')}</p>
+            <p className="footer-address">{t('footerAddressLine')}</p>
+          </div>
+
+          <div className="footer-col">
+            <h3 className="footer-col-title">{t('footerColResources')}</h3>
+            <a href={`${prefix}/about`}>{t('footerAbout')}</a>
+            <a href={`${prefix}/blog`}>{t('footerBlog')}</a>
+            <a href={`${prefix}/help-center`}>{t('footerHelpCenter')}</a>
+            <a href={`${prefix}/documentation`}>{t('footerDocumentation')}</a>
+            <a href={`${prefix}/case-studies`}>{t('footerCaseStudies')}</a>
+            <a href={`${prefix}/product-updates`}>{t('footerProductNews')}</a>
+            <a href={`${prefix}/events`}>{t('footerEvents')}</a>
+            <a href={`${prefix}/community`}>{t('footerCommunity')}</a>
+            <a href={`${prefix}/careers`}>{t('footerCareers')}</a>
+            <a href={`${prefix}/contact`}>{t('footerContact')}</a>
+            {showFaqLink ? <a href={`${prefix}/#landing-faq`}>{t('footerFaq')}</a> : null}
+            {legalVisibility.terms ? (
+              <a href={`${prefix}/legal/terms`}>{t('footerTermsOfService')}</a>
+            ) : null}
+            {legalVisibility['privacy-policy'] ? (
+              <a href={`${prefix}/legal/privacy-policy`}>{t('footerPrivacy')}</a>
+            ) : null}
+            {legalVisibility['cookie-policy'] ? (
+              <a href={`${prefix}/legal/cookie-policy`}>{t('footerCookiePolicy')}</a>
+            ) : null}
+            {legalVisibility['about-us'] ? (
+              <a href={`${prefix}/legal/about-us`}>{t('footerLegalAbout')}</a>
+            ) : null}
+            {cmsFooterLinks.map((p) => (
+              <a key={p.id} href={`${prefix}/page/${p.slug}`}>
+                {ucWords(p.title)}
+              </a>
+            ))}
+          </div>
+
+          <div className="footer-col">
+            <h3 className="footer-col-title">{t('footerColSolutions')}</h3>
+            <a href={`${prefix}/voice-ordering`}>{t('airestroHeader.sol1t')}</a>
+            <a href={`${prefix}/table-ordering`}>{t('airestroHeader.sol2t')}</a>
+            <a href={`${prefix}/kitchen-display`}>{t('airestroHeader.sol4t')}</a>
+            <a href={`${prefix}/delivery-sync`}>{t('airestroHeader.sol7t')}</a>
+            <a href={`${prefix}/loyalty-crm`}>{t('airestroHeader.sol8t')}</a>
+            <a href={`${prefix}/analytics`}>{t('airestroHeader.sol9t')}</a>
+            <a href={toolsPath}>{t('footerIntAll')}</a>
+          </div>
+
+          <div className="footer-col">
+            <h3 className="footer-col-title">{t('footerColIntegrations')}</h3>
+            <a href={`${prefix}/pos-systems`}>{t('footerIntPos')}</a>
+            <a href={`${prefix}/delivery-marketplaces`}>{t('footerInt3p')}</a>
+            <a href={`${prefix}/online-ordering`}>{t('footerIntOnline')}</a>
+            <a href={`${prefix}/uber-eats`}>{t('airestroHeader.intP1')}</a>
+            <a href={`${prefix}/doordash`}>{t('airestroHeader.intP2')}</a>
+            <a href={`${prefix}/square`}>{t('airestroHeader.intP3')}</a>
+            <a href={`${prefix}/partner-program`}>{t('footerIntPartner')}</a>
+          </div>
+
+          <div className="footer-col">
+            <h3 className="footer-col-title">{t('footerColFor')}</h3>
+            <a href={`${prefix}/#restaurants`}>{t('footerForRestaurants')}</a>
+            <a href={`${prefix}/#retail`}>{t('footerForRetail')}</a>
+            <a href={`${prefix}/#enterprise`}>{t('footerForEnterprise')}</a>
           </div>
         </div>
+
+        {(legalVisibility.terms || showPrivacyCookie || securityHref) ? (
+          <nav className="footer-legal-row" aria-label="Legal">
+            {legalVisibility.terms ? (
+              <a href={`${prefix}/legal/terms`}>{t('footerTermsOfService')}</a>
+            ) : null}
+            {showPrivacyCookie ? (
+              <a href={privacyHref}>{t('footerPrivacyCookieNotice')}</a>
+            ) : null}
+            {securityHref ? <a href={securityHref}>{t('footerSecurity')}</a> : null}
+          </nav>
+        ) : null}
       </div>
+
+      <a href={`${prefix}/contact`} className="footer-chat-fab" aria-label={t('footerChatAria')}>
+        <IconChat className="footer-chat-icon" />
+      </a>
     </footer>
   )
 }

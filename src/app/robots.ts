@@ -1,6 +1,8 @@
 import type { MetadataRoute } from 'next'
 import { siteOriginFromEnv } from '@/lib/cms/html'
 
+export const dynamic = 'force-static'
+
 export default function robots(): MetadataRoute.Robots {
   const base = siteOriginFromEnv().replace(/\/+$/, '')
   return {

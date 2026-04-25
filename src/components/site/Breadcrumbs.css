@@ -1,9 +1,10 @@
 .site-breadcrumbs {
-  max-width: var(--content-max-width);
-  margin: 0 auto;
-  padding: 0.5rem var(--content-padding-x) 0;
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 0.5rem 0 0.75rem;
   font-size: 0.8125rem;
-  color: var(--text-muted);
+  color: var(--text-muted, #6b6b6b);
 }
 
 .site-breadcrumbs-list {
@@ -23,24 +24,24 @@
 }
 
 .site-breadcrumbs-item:not(:last-child)::after {
-  content: '/';
-  color: var(--text-muted);
-  font-weight: 400;
-  margin-left: 0.1rem;
+  content: '>';
+  color: #888;
+  font-weight: 500;
+  margin-left: 0.2rem;
   pointer-events: none;
 }
 
 .site-breadcrumbs-link {
-  color: var(--text-secondary);
-  text-decoration: none;
+  color: #555;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 
 .site-breadcrumbs-link:hover {
-  color: var(--accent-red);
-  text-decoration: underline;
+  color: #111;
 }
 
 .site-breadcrumbs-current {
-  color: var(--text-primary);
-  font-weight: 500;
+  color: #111;
+  font-weight: 600;
 }

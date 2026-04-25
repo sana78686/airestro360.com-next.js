@@ -23,10 +23,24 @@ export function absolutizeCmsHtmlServer(html: string, siteOrigin: string): strin
   )
 }
 
+function withHttpScheme(origin: string): string {
+  const s = String(origin).trim()
+  if (!s) return s
+  if (/^https?:\/\//i.test(s)) return s
+  const host = s.split('/')[0] || s
+  if (
+    /^(localhost|127\.0\.0\.1|\[::1\])/i.test(host) ||
+    /^127\.\d+\.\d+\.\d+(:\d+)?$/i.test(host)
+  ) {
+    return `http://${s}`
+  }
+  return `https://${s}`
+}
+
 export function siteOriginFromEnv(): string {
-  const explicit = String(process.env.NEXT_PUBLIC_SITE_ORIGIN || '').trim().replace(/\/+$/, '')
-  if (explicit) return explicit
+  const raw = String(process.env.NEXT_PUBLIC_SITE_ORIGIN || '').trim().replace(/\/+$/, '')
+  if (raw) return withHttpScheme(raw)
   const d = String(process.env.NEXT_PUBLIC_SITE_DOMAIN || 'airestro360.com').trim()
   if (d === 'localhost' || d === '127.0.0.1') return `http://${d}`
-  return `https://${d}`
+  return withHttpScheme(d)
 }

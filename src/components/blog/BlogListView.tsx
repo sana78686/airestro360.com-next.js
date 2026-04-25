@@ -4,6 +4,8 @@ import { JsonLdScript } from '@/components/cms/JsonLdScript'
 import { siteOriginFromEnv } from '@/lib/cms/html'
 import { translations, langPrefix } from '@/i18n/translations'
 import BlogCardCover from '@/components/blog/BlogCardCover'
+import PageHeroBar from '@/components/site/PageHeroBar'
+import { tintForPageKey } from '@/lib/pageHeaderTint'
 import '@/styles/BlogListPage.css'
 
 type Locale = 'id' | 'en'
@@ -50,13 +52,12 @@ export async function BlogListView({ locale }: { locale: Locale }) {
   const lp = langPrefix(locale)
   const origin = siteOriginFromEnv()
 
+  const blogTint = tintForPageKey('blog')
+
   return (
     <article className="blog-list-page wrap">
       <JsonLdScript data={jsonLd} />
-      <header className="blog-list-header">
-        <h1 className="blog-list-title">{b.listTitle}</h1>
-        <p className="blog-list-intro">{b.listIntro}</p>
-      </header>
+      <PageHeroBar title={b.listTitle} subtitle={b.listIntro} tint={blogTint} />
       {blogs.length === 0 ? (
         <div className="blog-list-empty-state" role="status" aria-live="polite">
           <h2 className="blog-list-empty-title">{b.emptyTitle}</h2>

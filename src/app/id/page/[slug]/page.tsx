@@ -4,6 +4,8 @@ import type { Metadata } from 'next'
 import { getPageBySlug } from '@/lib/cms/server'
 import { absolutizeCmsHtmlServer, siteOriginFromEnv } from '@/lib/cms/html'
 import { JsonLdScript } from '@/components/cms/JsonLdScript'
+import PageHeroBar from '@/components/site/PageHeroBar'
+import { tintForSlug } from '@/lib/pageHeaderTint'
 import { langPrefix } from '@/i18n/translations'
 import '@/styles/cms-page.css'
 
@@ -49,12 +51,12 @@ export default async function IdCmsDynamicPage({ params }: { params: Promise<{ s
   const html = absolutizeCmsHtmlServer(String(data?.content || ''), origin)
   const jsonLd = data?.json_ld
 
+  const pageTint = tintForSlug(`page-${slug}`)
+
   return (
     <article className="cms-page wrap">
       <JsonLdScript data={jsonLd} />
-      <header className="cms-page-header">
-        <h1 className="cms-page-title">{String(data?.title || slug)}</h1>
-      </header>
+      <PageHeroBar title={String(data?.title || slug)} tint={pageTint} />
       <div className="cms-page-content" dangerouslySetInnerHTML={{ __html: html }} />
       <footer className="cms-page-footer">
         <Link href="/id" className="cms-page-back">

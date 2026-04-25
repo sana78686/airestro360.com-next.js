@@ -55,8 +55,22 @@ async function fetchPublicJsonUncached(
   for (let i = 0; i < attempts.length; i += 1) {
     const { root, headers: h } = attempts[i]
     const url = `${CMS_API_BASE}${root}${rel}`
-    const res = await fetch(url, { headers: h, next: { revalidate: 60 } })
-    if (res.ok) return res.json()
+    let res: Response
+    try {
+      res = await fetch(url, { headers: h, next: { revalidate: 60 } })
+    } catch (err) {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('[cms] fetch failed (network):', url, err)
+      }
+      continue
+    }
+    if (res.ok) {
+      try {
+        return await res.json()
+      } catch {
+        continue
+      }
+    }
     const retry =
       useDomainInApiPath &&
       i === 0 &&
@@ -66,65 +80,97 @@ async function fetchPublicJsonUncached(
     const data = await res.json().catch(() => ({}))
     throw new Error((data as { message?: string }).message || `HTTP ${res.status}`)
   }
-  throw new Error('Public API request failed')
+  if (process.env.NODE_ENV === 'development') {
+    console.warn('[cms] all fetch attempts failed (network) for', path, '→ empty payload')
+  }
+  return null
 }
 
 export async function getHomePageContent(locale: string, publicPath: string) {
   const host = await getSiteDomainForRequest()
-  return fetchPublicJsonUncached('/home-content', locale, host, publicPath) as Promise<{
+  const data = await fetchPublicJsonUncached('/home-content', locale, host, publicPath)
+  return (data ?? {}) as {
     content?: string
     json_ld?: { '@graph'?: unknown[] }
-  }>
+  }
 }
 
 export async function getBlogBySlug(slug: string, locale: string) {
   const host = await getSiteDomainForRequest()
-  return fetchPublicJsonUncached(
+  const data = await fetchPublicJsonUncached(
     `/blogs/${encodeURIComponent(slug)}`,
     locale,
     host,
-  ) as Promise<Record<string, unknown>>
+  )
+  return (data ?? {}) as Record<string, unknown>
 }
 
 export async function getBlogs(locale: string) {
   const host = await getSiteDomainForRequest()
-  return fetchPublicJsonUncached('/blogs', locale, host) as Promise<{
+  const data = await fetchPublicJsonUncached('/blogs', locale, host)
+  return (data ?? { blogs: [] }) as {
     blogs?: unknown[]
     json_ld?: unknown
     data?: unknown[]
-  }>
+  }
 }
 
 export async function getPageBySlug(slug: string, locale: string) {
   const host = await getSiteDomainForRequest()
-  return fetchPublicJsonUncached(`/pages/${encodeURIComponent(slug)}`, locale, host) as Promise<
-    Record<string, unknown>
-  >
+  const data = await fetchPublicJsonUncached(`/pages/${encodeURIComponent(slug)}`, locale, host)
+  return (data ?? {}) as Record<string, unknown>
 }
 
 export async function getLegalPage(slug: string, locale: string) {
   const host = await getSiteDomainForRequest()
-  return fetchPublicJsonUncached(`/legal/${encodeURIComponent(slug)}`, locale, host) as Promise<
-    Record<string, unknown>
-  >
+  const data = await fetchPublicJsonUncached(`/legal/${encodeURIComponent(slug)}`, locale, host)
+  return (data ?? {}) as Record<string, unknown>
 }
 
 export async function getContactSettings(locale: string) {
   const host = await getSiteDomainForRequest()
-  return fetchPublicJsonUncached('/contact', locale, host) as Promise<Record<string, unknown>>
+  const data = await fetchPublicJsonUncached('/contact', locale, host)
+  return (data ?? {}) as Record<string, unknown>
 }
 
 export async function getPages(locale: string) {
   const host = await getSiteDomainForRequest()
-  return fetchPublicJsonUncached('/pages', locale, host) as Promise<{ pages?: { id: number; title: string; slug: string; placement?: string }[] }>
+  const data = await fetchPublicJsonUncached('/pages', locale, host)
+  return (data ?? { pages: [] }) as {
+    pages?: { id: number; title: string; slug: string; placement?: string }[]
+  }
 }
 
 export async function getLegalNav(locale: string) {
   const host = await getSiteDomainForRequest()
-  return fetchPublicJsonUncached('/legal-nav', locale, host) as Promise<{ legal?: Record<string, boolean> }>
+  const data = await fetchPublicJsonUncached('/legal-nav', locale, host)
+  return (data ?? { legal: {} }) as { legal?: Record<string, boolean> }
 }
 
 export async function getFaq(locale: string) {
   const host = await getSiteDomainForRequest()
-  return fetchPublicJsonUncached('/faq', locale, host) as Promise<{ faq?: { question?: string; answer?: string }[] }>
+  const data = await fetchPublicJsonUncached('/faq', locale, host)
+  return (data ?? { faq: [] }) as { faq?: { question?: string; answer?: string }[] }
+}
+
+export async function getHomeCards(locale: string) {
+  const host = await getSiteDomainForRequest()
+  const data = await fetchPublicJsonUncached('/home-cards', locale, host)
+  return (data ?? { cards: [], section: null }) as {
+    cards?: unknown[]
+    section?: { title?: string; description?: string } | null
+  }
+}
+
+export async function getSections(locale: string) {
+  const host = await getSiteDomainForRequest()
+  const data = await fetchPublicJsonUncached('/sections', locale, host)
+  return (data ?? { sections: [] }) as {
+    sections?: Array<{
+      id?: number | string
+      title?: string
+      description?: string
+      items?: unknown[]
+    }>
+  }
 }

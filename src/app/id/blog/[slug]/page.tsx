@@ -5,6 +5,8 @@ import { getBlogBySlug } from '@/lib/cms/server'
 import { absolutizeCmsHtmlServer, siteOriginFromEnv } from '@/lib/cms/html'
 import { resolveCmsMediaUrlWithOrigin } from '@/utils/cmsAssetUrl'
 import { JsonLdScript } from '@/components/cms/JsonLdScript'
+import PageHeroBar from '@/components/site/PageHeroBar'
+import { tintForSlug } from '@/lib/pageHeaderTint'
 import { langPrefix } from '@/i18n/translations'
 import '@/styles/cms-page.css'
 
@@ -73,16 +75,16 @@ export default async function IdBlogPostPage({ params }: { params: Promise<{ slu
   }
 
   const title = String(data?.title || 'Blog')
+  const excerpt = String(data?.excerpt || data?.meta_description || '').trim()
   const origin = siteOriginFromEnv()
+  const postTint = tintForSlug(`blog-${slug}`)
   const html = absolutizeCmsHtmlServer(String(data?.content || ''), origin)
   const jsonLd = data?.json_ld as { '@graph'?: unknown[] } | undefined
 
   return (
     <article className="cms-page cms-blog wrap">
       <JsonLdScript data={jsonLd} />
-      <header className="cms-blog-header">
-        <h1 className="cms-blog-title">{title}</h1>
-      </header>
+      <PageHeroBar title={title} subtitle={excerpt || undefined} tint={postTint} />
       <div className="cms-page-content cms-blog-content" dangerouslySetInnerHTML={{ __html: html }} />
       <footer className="cms-page-footer">
         <Link href="/id/blog" className="cms-page-back">
