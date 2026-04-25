@@ -1,12 +1,17 @@
 /* Tinted page title block — sits under SiteLayout breadcrumbs, full content width */
 .page-hero-bar {
   width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
   border-radius: 0 0 18px 18px;
   padding: 1.1rem 1.4rem;
+  padding-left: max(1.1rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1.1rem, env(safe-area-inset-right, 0px));
   margin: 0 0 1.25rem;
   border: 1px solid rgba(0, 0, 0, 0.05);
   border-top: none;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .page-hero-bar-kicker {
@@ -64,4 +69,23 @@
 }
 .page-hero-bar--slate {
   background: linear-gradient(180deg, #e2e8f0 0%, #f8fafc 55%, #ffffff 100%);
+}
+
+@media (max-width: 640px) {
+  .page-hero-bar {
+    padding: 0.85rem 1rem;
+    padding-left: max(0.75rem, env(safe-area-inset-left, 0px));
+    padding-right: max(0.75rem, env(safe-area-inset-right, 0px));
+    border-radius: 0 0 14px 14px;
+    margin-bottom: 1rem;
+  }
+
+  .page-hero-bar-title {
+    font-size: clamp(1.25rem, 5vw, 1.65rem);
+  }
+
+  .page-hero-bar-sub {
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
 }

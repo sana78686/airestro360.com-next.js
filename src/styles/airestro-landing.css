@@ -17,6 +17,16 @@
   --ar-gray-900: #1a1a1a;
   --ar-gray-bar: #2d2d2d;
   --ar-gray-muted: #6b6b6b;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg-page, #ffffff);
+}
+
+@media (max-width: 480px) {
+  .home-page {
+    --content-padding-x: 0.65rem;
+  }
 }
 
 /* ─── Top announcement bar ─── */
@@ -1204,6 +1214,15 @@ a.ar-nav-pill-link--plain:hover {
   max-width: var(--content-max-width, 1200px);
   margin: 0 auto;
   padding: 0.35rem var(--content-padding-x, 0.75rem) 3.5rem;
+  padding-left: max(var(--content-padding-x, 0.75rem), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--content-padding-x, 0.75rem), env(safe-area-inset-right, 0px));
+  padding-bottom: max(3.5rem, env(safe-area-inset-bottom, 0px));
+}
+
+@media (max-width: 640px) {
+  .main.cms-main:not(:has(> .main.main--ar:only-child)) {
+    padding-top: 0.25rem;
+  }
 }
 
 /* ─── Full-bleed landing shell ─── */
@@ -1217,6 +1236,9 @@ a.ar-nav-pill-link--plain:hover {
 .ar-container {
   max-width: 1200px;
   margin: 0 auto;
+  padding-left: max(0.75rem, env(safe-area-inset-left, 0px));
+  padding-right: max(0.75rem, env(safe-area-inset-right, 0px));
+  box-sizing: border-box;
 }
 
 .ar-home-pricing {

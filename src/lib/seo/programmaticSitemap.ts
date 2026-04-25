@@ -1,9 +1,9 @@
 import type { MetadataRoute } from 'next'
 import { siteOriginFromEnv } from '@/lib/cms/html'
-import { getBlogs } from '@/lib/cms/server'
+import { getBlogs, getPages } from '@/lib/cms/server'
 import { MARKETING_SLUGS } from '@/lib/marketing/registry'
 
-export const revalidate = 3600
+const LEGAL_SLUGS = ['terms', 'privacy-policy', 'disclaimer', 'about-us', 'cookie-policy']
 
 function normalizeBlogSlugs(res: unknown): { slug: string }[] {
   if (Array.isArray(res)) {
@@ -21,7 +21,24 @@ function normalizeBlogSlugs(res: unknown): { slug: string }[] {
   return []
 }
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+function normalizePageSlugs(res: unknown): string[] {
+  if (!res || typeof res !== 'object') return []
+  const pages = (res as { pages?: { slug?: string }[] }).pages
+  if (!Array.isArray(pages)) return []
+  return pages
+    .map((p) => (p && typeof p.slug === 'string' ? p.slug : ''))
+    .filter(Boolean)
+}
+
+function escapeXml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+export async function getProgrammaticSitemapEntries(): Promise<MetadataRoute.Sitemap> {
   const base = siteOriginFromEnv().replace(/\/+$/, '')
   const lastModified = new Date()
 
@@ -63,9 +80,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   }
 
+  for (const slug of LEGAL_SLUGS) {
+    const enc = encodeURIComponent(slug)
+    entries.push({
+      url: `${base}/legal/${enc}`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    })
+    entries.push({
+      url: `${base}/id/legal/${enc}`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    })
+  }
+
   try {
-    const [enRes, idRes] = await Promise.all([getBlogs('en'), getBlogs('id')])
-    for (const b of normalizeBlogSlugs(enRes)) {
+    const [enBlogs, idBlogs, enPages, idPages] = await Promise.all([
+      getBlogs('en'),
+      getBlogs('id'),
+      getPages('en'),
+      getPages('id'),
+    ])
+    for (const b of normalizeBlogSlugs(enBlogs)) {
       entries.push({
         url: `${base}/blog/${encodeURIComponent(b.slug)}`,
         lastModified,
@@ -73,7 +111,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       })
     }
-    for (const b of normalizeBlogSlugs(idRes)) {
+    for (const b of normalizeBlogSlugs(idBlogs)) {
       entries.push({
         url: `${base}/id/blog/${encodeURIComponent(b.slug)}`,
         lastModified,
@@ -81,9 +119,42 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       })
     }
+    for (const slug of normalizePageSlugs(enPages)) {
+      entries.push({
+        url: `${base}/page/${encodeURIComponent(slug)}`,
+        lastModified,
+        changeFrequency: 'monthly',
+        priority: 0.65,
+      })
+    }
+    for (const slug of normalizePageSlugs(idPages)) {
+      entries.push({
+        url: `${base}/id/page/${encodeURIComponent(slug)}`,
+        lastModified,
+        changeFrequency: 'monthly',
+        priority: 0.65,
+      })
+    }
   } catch {
-    /* CMS unavailable during build */
+    /* CMS unavailable — static URLs still listed */
   }
 
   return entries
+}
+
+export function sitemapEntriesToXml(entries: MetadataRoute.Sitemap): string {
+  const lines = entries.map((e) => {
+    const loc = escapeXml(e.url)
+    const lastmod =
+      e.lastModified != null
+        ? `<lastmod>${escapeXml(new Date(e.lastModified).toISOString())}</lastmod>`
+        : ''
+    const cf =
+      e.changeFrequency != null
+        ? `<changefreq>${escapeXml(String(e.changeFrequency))}</changefreq>`
+        : ''
+    const pr = e.priority != null ? `<priority>${escapeXml(String(e.priority))}</priority>` : ''
+    return `  <url><loc>${loc}</loc>${lastmod}${cf}${pr}</url>`
+  })
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${lines.join('\n')}\n</urlset>\n`
 }

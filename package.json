@@ -13,7 +13,8 @@
     "ios_saf >= 16.4"
   ],
   "scripts": {
-    "dev": "next dev -p 3003",
+    "dev": "node scripts/start-dev.mjs",
+    "dev:raw": "next dev -p 3003",
     "dev:clean": "node scripts/dev-clean.mjs",
     "clean": "node scripts/clean-next.mjs",
     "build": "next build",

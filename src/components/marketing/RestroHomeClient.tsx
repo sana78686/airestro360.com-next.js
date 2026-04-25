@@ -8,10 +8,12 @@ import { useTranslation } from '@/i18n/useTranslation'
 import { langPrefix } from '@/i18n/translations'
 import { usePathLang } from '@/hooks/usePathLang'
 import '@/styles/cms-page.css'
+import { cmsHtmlHasVisibleText } from '@/utils/cmsHtmlVisible'
 import PricingTiersSection from '@/components/pricing/PricingTiersSection'
 import PricingComparisonTable from '@/components/pricing/PricingComparisonTable'
+import LandingCmsFold from './LandingCmsFold'
 
-const LandingBelowFold = dynamic(() => import('./LandingBelowFold'), {
+const LandingBelowFoldStatic = dynamic(() => import('./LandingBelowFoldStatic'), {
   ssr: true,
   loading: () => null,
 })
@@ -27,12 +29,8 @@ export type RestroHomeClientProps = {
   landingCards?: unknown[]
   howSection?: { title?: string; description?: string } | null
   cmsSections?: unknown[]
-}
-
-function cmsHtmlHasVisibleText(html: string) {
-  if (!html || typeof html !== 'string') return false
-  const text = html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
-  return text.length > 0
+  /** When true, CMS body + CMS fold are rendered on the server (page.tsx); client skips duplicates. */
+  landingExtrasOnServer?: boolean
 }
 
 /** English at `/`, Indonesian at `/id` (no trailing slash normalized). */
@@ -52,12 +50,14 @@ export default function RestroHomeClient({
   landingCards: landingCardsProp = [],
   howSection: howSectionProp = null,
   cmsSections: cmsSectionsProp = [],
+  landingExtrasOnServer = false,
 }: RestroHomeClientProps) {
   const lang = usePathLang()
   const pathname = usePathname() || '/'
   const t = useTranslation(lang)
   const lp = langPrefix(lang)
   const isHomeLanding = isHomePath(pathname, lp)
+  const skipClientLandingCms = Boolean(landingExtrasOnServer && isHomeLanding)
 
   const [faqOpenIndex, setFaqOpenIndex] = useState<number | null>(null)
 
@@ -78,12 +78,13 @@ export default function RestroHomeClient({
         <div className="ar-container ar-hero-grid">
           <div>
             <p className="ar-hero-kicker">{t('landing.arHeroEyebrow')}</p>
-            <h1 id="ar-hero-title" className="ar-hero-title">
+            {/* Document <h1> is the sr-only title in page.tsx (SEO). Visual title remains styled as before. */}
+            <p id="ar-hero-title" className="ar-hero-title">
               {t('landing.heroTitleLine1')}
               <span className="ar-hero-title-accent">{t('landing.heroTitleAccent1')}</span>
               {t('landing.heroTitleLine2')}
               <span className="ar-hero-title-accent">{t('landing.heroTitleAccent2')}</span>
-            </h1>
+            </p>
             <p className="ar-hero-sub">{t('landing.heroSubtitle')}</p>
             <div className="ar-hero-actions">
               <Link className="ar-btn-primary" href={`${lp}/contact`}>
@@ -139,7 +140,7 @@ export default function RestroHomeClient({
         </section>
       ) : null}
 
-      {isHomeLanding && cmsHtmlHasVisibleText(cmsHomeHtml) && (
+      {!skipClientLandingCms && isHomeLanding && cmsHtmlHasVisibleText(cmsHomeHtml) && (
         <section className="ar-cms landing-cms-body-section" aria-label={t('landing.cmsSectionAria')}>
           <div className="ar-container">
             <div
@@ -150,13 +151,20 @@ export default function RestroHomeClient({
         </section>
       )}
 
-      <LandingBelowFold
-        t={t}
-        cards={landingCards}
-        howSection={howSection}
-        sections={cmsSections}
-        lp={lp}
-      />
+      {skipClientLandingCms ? (
+        <LandingBelowFoldStatic t={t} lp={lp} />
+      ) : (
+        <>
+          <LandingCmsFold
+            t={t}
+            cards={landingCards}
+            howSection={howSection}
+            sections={cmsSections}
+            lp={lp}
+          />
+          <LandingBelowFoldStatic t={t} lp={lp} />
+        </>
+      )}
 
       {faqItems.length > 0 && (
         <LandingFaqSection

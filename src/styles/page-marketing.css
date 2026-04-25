@@ -31,3 +31,17 @@
   color: #3a3a3a;
   margin: 0;
 }
+
+@media (max-width: 640px) {
+  .page-marketing {
+    padding-bottom: 2.5rem;
+  }
+
+  .page-marketing-h2 {
+    font-size: 1.05rem;
+  }
+
+  .page-marketing-p {
+    font-size: 0.95rem;
+  }
+}

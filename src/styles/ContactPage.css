@@ -3,6 +3,9 @@
   max-width: var(--content-max-width, 1200px);
   margin: 0 auto;
   padding: 2rem var(--content-padding-x, 1.5rem);
+  padding-left: max(var(--content-padding-x, 1.5rem), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--content-padding-x, 1.5rem), env(safe-area-inset-right, 0px));
+  padding-bottom: max(2rem, env(safe-area-inset-bottom, 0px));
   width: 100%;
   box-sizing: border-box;
   min-height: 60vh;

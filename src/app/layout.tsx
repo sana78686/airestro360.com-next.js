@@ -21,6 +21,13 @@ try {
   metadataBase = new URL('http://localhost:3003/')
 }
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover' as const,
+  themeColor: '#ffffff',
+}
+
 export const metadata: Metadata = {
   metadataBase,
   title: { default: 'AI Restro 360', template: '%s | AI Restro 360' },

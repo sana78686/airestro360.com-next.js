@@ -234,3 +234,44 @@
 .pricing-compare-table td:empty {
   color: #9ca3af;
 }
+
+/* Tablet: two columns for tiers; phones stay one column in base rules */
+@media (min-width: 640px) and (max-width: 899px) {
+  .pricing-tiers-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 639px) {
+  .pricing-tiers-sub,
+  .pricing-compare-sub {
+    max-width: none;
+  }
+
+  .pricing-compare-h2,
+  .pricing-tiers-h2 {
+    font-size: 1.25rem;
+  }
+
+  .pricing-compare-table th,
+  .pricing-compare-table td {
+    padding: 0.5rem 0.45rem;
+    font-size: 0.82rem;
+  }
+
+  .pricing-compare-table thead th {
+    font-size: 0.62rem;
+  }
+}
+
+/* Improve horizontal scroll affordance on very small viewports */
+@media (max-width: 480px) {
+  .pricing-tier-card {
+    padding: 1.1rem 1rem 1.25rem;
+  }
+
+  .pricing-compare-table-wrap {
+    border-radius: 10px;
+    margin: 0 -0.15rem;
+  }
+}
