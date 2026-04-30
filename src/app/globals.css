@@ -6,6 +6,8 @@
 :root {
   --background: #ffffff;
   --foreground: #1a1a1a;
+  /* Default body copy — headings keep their own font sizes from components */
+  --font-size-body: 18px;
   line-height: 1.5;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -28,6 +30,33 @@ body {
   background: var(--background);
   font-family: var(--font-outfit), system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
     sans-serif;
+  font-size: var(--font-size-body);
+}
+
+/* Default paragraph & inline text (excluding heading stacks) */
+p {
+  font-size: var(--font-size-body);
+}
+
+span {
+  font-size: inherit;
+}
+
+/* Cards & FAQ sections — lock body copy to 18px */
+.card,
+[class*='card'],
+[class*='faq'],
+.dx-faq,
+.dx-faq-q,
+.dx-faq-a,
+.dx-faq-a-inner,
+.tool-card,
+.tool-card-label,
+.landing-card-desc,
+.cms-home-cms-body,
+.cms-page-content,
+.cms-page-content p {
+  font-size: var(--font-size-body);
 }
 
 /* Pills: use on links/buttons that should match header CTAs */

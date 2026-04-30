@@ -9,6 +9,7 @@ import { langPrefix } from '@/i18n/translations'
 import { usePathLang } from '@/hooks/usePathLang'
 import '@/styles/cms-page.css'
 import { cmsHtmlHasVisibleText } from '@/utils/cmsHtmlVisible'
+import { RESTRO_REGISTER_URL } from '@/config/portal'
 import PricingTiersSection from '@/components/pricing/PricingTiersSection'
 import PricingComparisonTable from '@/components/pricing/PricingComparisonTable'
 import LandingCmsFold from './LandingCmsFold'
@@ -87,9 +88,14 @@ export default function RestroHomeClient({
             </p>
             <p className="ar-hero-sub">{t('landing.heroSubtitle')}</p>
             <div className="ar-hero-actions">
-              <Link className="ar-btn-primary" href={`${lp}/contact`}>
+              <a
+                className="ar-btn-primary"
+                href={RESTRO_REGISTER_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {t('landing.arGetStarted')}
-              </Link>
+              </a>
               <Link className="ar-btn-ghost" href={`${lp}/contact`}>
                 {t('landing.arContactLink')}
               </Link>

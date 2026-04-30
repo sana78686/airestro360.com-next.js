@@ -12,5 +12,7 @@ export const PORTAL_LOGIN_URL = `${PORTAL_BASE_URL}/login`
 export const PORTAL_DASHBOARD_URL = `${PORTAL_BASE_URL}/dashboard`
 
 /** My AI Restro 360 app — header Log in / Get started. */
-export const RESTRO_LOGIN_URL = 'https://my.airestro360.com/restro-login'
-export const RESTRO_REGISTER_URL = 'https://my.airestro360.com/restro-register'
+const MY_AIRESTRO_BASE = 'https://my.airestro360.com'.replace(/\/+$/, '')
+export const RESTRO_LOGIN_URL = `${MY_AIRESTRO_BASE}/login`
+/** Same as marketing “Get started” (app root). */
+export const RESTRO_REGISTER_URL = `${MY_AIRESTRO_BASE}/`
